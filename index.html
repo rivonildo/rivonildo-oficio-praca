@@ -2,297 +2,454 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>Ofício - Praça Inteligente Santa Marta</title>
-    <!-- Fontes modernas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Ofício • Praça Santa Marta</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2e7d32">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ofício Santa Marta">
+    <meta name="application-name" content="Ofício Santa Marta">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- PWA Icons -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232e7d32'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%23ff8f00'%3E🌿%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232e7d32'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%23ff8f00'%3E🌿%3C/text%3E%3C/svg%3E">
+    
+    <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
+        /* ===== RESET E VARIÁVEIS ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --accent: #ff8f00;
+            --accent-light: #ffb74d;
+            --bg-light: #f8faf5;
+            --text-dark: #1a2e1a;
+            --text-soft: #2c4a2c;
+            --gray-light: #e8f0e5;
+            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 30px;
+        }
+
         body {
-            background: linear-gradient(145deg, #f4faf0 0%, #e2eedb 100%);
             font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #f4faf0 0%, #e2eedb 100%);
+            color: var(--text-dark);
             line-height: 1.6;
-            color: #1a2e1a;
-            padding: 24px 16px;
+            min-height: 100vh;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1000px;
             width: 100%;
             margin: 0 auto;
-            position: relative;
+            padding: 20px 16px 80px;
         }
 
-        /* ===== INDICADORES DE ROLAGEM - IGUAL AO QUIZ ===== */
+        /* ===== SCROLL HINTS ===== */
         .scroll-hint-left, .scroll-hint-right {
             position: fixed;
             top: 50%;
             transform: translateY(-50%);
-            background: #2e7d32;
+            background: var(--primary);
             color: white;
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-            border: 3px solid #ff8f00;
-            z-index: 1000;
+            font-size: 1.4rem;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--accent);
+            z-index: 90;
             cursor: pointer;
-            animation: pulse-side 2s infinite;
+            transition: all 0.2s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scroll-hint-left.visible, .scroll-hint-right.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .scroll-hint-left { left: 16px; }
+        .scroll-hint-right { right: 16px; }
+
+        .scroll-hint-left:hover, .scroll-hint-right:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* ===== PLAYER FLUTUANTE MODERNO ===== */
+        .audio-float {
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .audio-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 60px;
+            padding: 8px 16px 8px 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: var(--shadow-lg), 0 0 0 1px rgba(46, 125, 32, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            max-width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .audio-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .audio-info i {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .audio-info span {
+            white-space: nowrap;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(46, 125, 32, 0.2);
+        }
+
+        .btn-circle:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-circle:active {
+            transform: scale(0.95);
+        }
+
+        .progress-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+        }
+
+        .progress-area span {
+            font-size: 0.8rem;
+            color: var(--text-soft);
+            font-weight: 500;
+            min-width: 35px;
+        }
+
+        .progress-bar-custom {
+            flex: 1;
+            height: 5px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .volume-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .volume-area i {
+            color: var(--text-soft);
+            font-size: 0.9rem;
+        }
+
+        .volume-area input {
+            width: 70px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .volume-area input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ===== DOCUMENTO CARD ===== */
+        .document-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: 40px 32px;
+            border: 1px solid rgba(0,0,0,0.05);
             transition: all 0.3s ease;
         }
 
-        .scroll-hint-left {
-            left: 10px;
-        }
-
-        .scroll-hint-right {
-            right: 10px;
-        }
-
-        .scroll-hint-left:hover, .scroll-hint-right:hover {
-            transform: translateY(-50%) scale(1.1);
-            background: #ff8f00;
-            color: #2e7d32;
-        }
-
-        @media (max-width: 768px) {
-            .scroll-hint-left, .scroll-hint-right {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-        }
-
-        @keyframes pulse-side {
-            0% { opacity: 0.7; }
-            50% { opacity: 1; box-shadow: 0 0 20px #2e7d32; }
-            100% { opacity: 0.7; }
-        }
-
-        /* Card principal */
-        .document-card {
-            background: white;
-            border-radius: 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 40, 0, 0.3);
-            padding: 40px 32px;
-            margin-bottom: 32px;
-            border: 1px solid #c3dfb6;
-            overflow-x: hidden;
-        }
-
-        /* Cabeçalho com brasão */
+        /* Cabeçalho */
         .header-document {
             display: flex;
             align-items: center;
             gap: 24px;
             margin-bottom: 32px;
             padding-bottom: 24px;
-            border-bottom: 3px dashed #9fcc8f;
+            border-bottom: 2px dashed var(--gray-light);
             flex-wrap: wrap;
         }
 
         .seal {
-            background: #2e7d32;
+            background: var(--primary);
             color: white;
-            width: 90px;
-            height: 90px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.8rem;
-            box-shadow: 0 8px 0 #1b4d1f;
+            font-size: 2.5rem;
+            box-shadow: 0 8px 0 var(--primary-dark);
         }
 
         .title-header h1 {
-            font-family: 'Merriweather', serif;
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 700;
-            color: #1b5e20;
+            color: var(--primary-dark);
             letter-spacing: -0.02em;
             line-height: 1.2;
         }
 
         .title-header .sub {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 500;
-            color: #2a5e2a;
-            background: #e9f3e4;
-            padding: 8px 18px;
+            color: var(--primary);
+            background: var(--gray-light);
+            padding: 6px 16px;
             border-radius: 40px;
             display: inline-block;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         /* Metadados */
         .meta-info {
             display: flex;
             flex-wrap: wrap;
-            gap: 24px 40px;
-            background: #f2f9ef;
-            padding: 18px 24px;
-            border-radius: 30px;
-            margin-bottom: 32px;
-            border: 1px solid #bad5ad;
+            gap: 24px 32px;
+            background: var(--gray-light);
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            margin-bottom: 30px;
         }
 
         .meta-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .meta-item i {
-            color: #2e7d32;
-            width: 26px;
-            font-size: 1.4rem;
+            color: var(--primary);
+            width: 20px;
+            font-size: 1.2rem;
         }
 
         .meta-item strong {
-            font-weight: 700;
-            color: #0f3b0f;
+            font-weight: 600;
+            color: var(--primary-dark);
         }
 
-        /* Destinatário */
-        .destinatario-box {
-            background: #ecf6e8;
+        /* Boxes */
+        .destinatario-box, .assunto-box {
+            background: var(--gray-light);
             padding: 22px;
-            border-radius: 24px;
+            border-radius: var(--radius-md);
             margin-bottom: 30px;
-            border-left: 10px solid #2e7d32;
+            border-left: 6px solid var(--primary);
         }
 
-        .destinatario-box p {
-            font-size: 1.1rem;
-            margin: 4px 0;
-            word-break: break-word;
-        }
-
-        /* Assunto */
         .assunto-box {
-            background: #dff0d9;
-            padding: 28px;
-            border-radius: 28px;
-            margin-bottom: 40px;
-            border-left: 10px solid #1f5a23;
+            border-left-color: var(--accent);
         }
 
         .assunto-box strong {
-            font-weight: 700;
-            color: #0f3b0f;
+            color: var(--accent);
             display: block;
-            font-size: 1rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .assunto-box p {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 500;
-            line-height: 1.5;
-            color: #1b4d1f;
-            word-break: break-word;
+            color: var(--text-dark);
         }
 
+        /* Títulos */
         h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
-            color: #1b5e20;
-            margin: 48px 0 20px 0;
+            color: var(--primary-dark);
+            margin: 40px 0 20px 0;
             padding-bottom: 8px;
-            border-bottom: 2px solid #b8d9ad;
-            word-break: break-word;
-        }
-
-        h2 i {
-            color: #4caf50;
-            margin-right: 14px;
-            font-size: 2rem;
-        }
-
-        h3 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin: 28px 0 16px 0;
-            color: #235b23;
+            border-bottom: 2px solid var(--gray-light);
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
+        }
+
+        h2 i {
+            color: var(--accent);
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         h3 i {
-            color: #4caf50;
-            font-size: 1.5rem;
+            color: var(--accent);
+            font-size: 1.4rem;
         }
 
+        /* Listas */
         .list-tick {
             list-style: none;
             margin: 16px 0;
         }
 
         .list-tick li {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
             gap: 12px;
             align-items: flex-start;
-            word-break: break-word;
         }
 
         .list-tick li i {
-            color: #2e7d32;
-            font-size: 1.3rem;
-            min-width: 28px;
+            color: var(--primary);
+            font-size: 1.1rem;
+            min-width: 24px;
+            margin-top: 3px;
         }
 
+        .list-dot {
+            list-style: none;
+            padding-left: 20px;
+        }
+        .list-dot li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            display: inline-block;
+            width: 20px;
+            margin-left: -20px;
+        }
+
+        /* Tabelas */
         .table-responsive {
             overflow-x: auto;
-            margin: 24px 0;
-            border-radius: 20px;
-            border: 1px solid #c0e0b2;
+            margin: 20px 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--gray-light);
             background: white;
-            -webkit-overflow-scrolling: touch;
-            position: relative;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.98rem;
+            font-size: 0.95rem;
             min-width: 500px;
         }
 
         th {
-            background: #2e7d32;
+            background: var(--primary);
             color: white;
             font-weight: 600;
-            padding: 16px 14px;
+            padding: 14px;
             text-align: left;
         }
 
         td {
-            padding: 14px;
-            border-bottom: 1px solid #cde3c2;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--gray-light);
             vertical-align: top;
-            word-break: break-word;
         }
 
         tr:last-child td {
@@ -300,243 +457,22 @@
         }
 
         tr:nth-child(even) {
-            background: #f9fff8;
-        }
-
-        .badge-ods {
-            background: #a6cf99;
-            color: #0a2c0a;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            display: inline-block;
-            margin-left: 8px;
-        }
-
-        .card-destaque {
-            background: #f0f9ec;
-            border-radius: 28px;
-            padding: 28px;
-            border: 2px solid #9fcc8f;
-            margin: 28px 0;
-        }
-
-        /* ===== NARRADOR - IMPLEMENTAÇÃO CORRIGIDA IGUAL AO QUIZ ===== */
-        .narration-header {
-            background: #2e7d32;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 60px 60px 0 0;
-            text-align: center;
-            font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: 0;
-            border: 2px solid #ff8f00;
-            border-bottom: none;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
-        }
-        
-        .narration-header i {
-            margin: 0 8px;
-            color: #ff8f00;
-            animation: pulse 2s infinite;
-        }
-        
-        .narration-header strong {
-            color: #ff8f00;
-            font-size: 1.1rem;
-        }
-
-        .narration-bar {
-            background: rgba(46, 125, 50, 0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 2px solid #ff8f00;
-            border-top: none;
-            border-radius: 0 0 60px 60px;
-            padding: 20px 24px;
-            margin: 0 0 25px 0;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            box-shadow: 0 10px 30px rgba(0, 40, 0, 0.15);
-            background: rgba(255, 255, 255, 0.98);
-        }
-
-        .status-indicator {
-            font-size: 0.9rem;
-            color: #2e7d32;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: white;
-            padding: 8px 16px;
-            border-radius: 40px;
-            border: 2px solid #2e7d32;
-            white-space: nowrap;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .status-indicator i {
-            color: #2e7d32;
-            font-size: 1rem;
-        }
-
-        .narration-controls {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .narration-btn {
-            background: white;
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            color: #2e7d32;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border: 2px solid #2e7d32;
-        }
-
-        .narration-btn:hover {
-            background: #2e7d32;
-            color: white;
-            transform: scale(1.08);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-
-        .narration-btn:active {
-            transform: scale(0.95);
-            background: #4caf50;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .narration-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background: #ccc;
-            border-color: #999;
-            color: #666;
-        }
-
-        .voice-select {
-            background: white;
-            border: 2px solid #2e7d32;
-            border-radius: 40px;
-            padding: 10px 20px;
-            font-size: 0.9rem;
-            color: #2e7d32;
-            font-weight: 500;
-            min-width: 200px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .voice-select option {
-            color: #2e7d32;
-            background: white;
-        }
-
-        .speed-control-horizontal {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: white;
-            padding: 8px 16px;
-            border-radius: 40px;
-            border: 2px solid #2e7d32;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .speed-control-horizontal i {
-            color: #2e7d32;
-            font-size: 1rem;
-        }
-
-        .speed-control-horizontal span {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #2e7d32;
-        }
-
-        .rate-control-horizontal {
-            width: 80px;
-            height: 6px;
-            -webkit-appearance: none;
-            background: linear-gradient(90deg, #4caf50, #2e7d32);
-            border-radius: 10px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .rate-control-horizontal::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            background: white;
-            border: 2px solid #2e7d32;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.9; }
-            50% { opacity: 1; box-shadow: 0 0 15px #ff8f00; }
-            100% { opacity: 0.9; }
-        }
-
-        .flex-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin: 24px 0;
-        }
-
-        .info-pilar {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 8px 20px rgba(30, 70, 30, 0.05);
-            border: 1px solid #c0ddb5;
-        }
-
-        .info-pilar h4 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #1b5e20;
-            font-weight: 700;
-            margin-bottom: 16px;
-            font-size: 1.2rem;
-            flex-wrap: wrap;
+            background: #f9fff9;
         }
 
         /* Assinatura */
         .assinatura {
             margin-top: 60px;
             padding-top: 40px;
-            border-top: 3px dashed #9fcc8f;
+            border-top: 2px dashed var(--gray-light);
             text-align: center;
         }
 
         .line-sign {
-            width: 300px;
+            width: 250px;
             max-width: 80%;
             height: 2px;
-            background: #2e7d32;
+            background: var(--primary);
             margin: 16px auto 20px;
         }
 
@@ -544,99 +480,123 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 28px;
-            margin-top: 24px;
-            font-size: 1.05rem;
+            gap: 24px;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: var(--text-soft);
         }
 
         .contact-info i {
-            color: #2e7d32;
-            margin-right: 8px;
+            color: var(--primary);
+            margin-right: 6px;
         }
 
         footer {
             text-align: center;
-            margin: 30px 0 10px;
-            color: #3e603e;
+            margin-top: 30px;
+            color: var(--text-soft);
+            font-size: 0.9rem;
+        }
+
+        /* ===== PWA INSTALL PROMPT ===== */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--primary-dark);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 60px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--accent);
+            z-index: 200;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .install-prompt.show {
+            display: flex;
+        }
+
+        .install-prompt span {
             font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .install-btn {
+            background: var(--accent);
+            color: var(--primary-dark);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            border: 2px solid white;
+        }
+
+        .install-btn:hover {
+            transform: scale(1.05);
+            background: white;
         }
 
         /* ===== RESPONSIVIDADE ===== */
         @media (max-width: 700px) {
-            .narration-bar {
-                flex-direction: column;
-                padding: 20px;
-                border-radius: 0 0 40px 40px;
-            }
+            .container { padding: 16px 12px 80px; }
             
-            .narration-header {
-                border-radius: 40px 40px 0 0;
-                font-size: 0.9rem;
-                padding: 12px 15px;
-            }
-            
-            .status-indicator { 
-                width: 100%; 
-                justify-content: center; 
-            }
-            
-            .narration-controls { 
-                order: -1; 
+            .audio-card {
+                padding: 8px 16px;
+                gap: 12px;
                 width: 100%;
-                justify-content: center;
             }
             
-            .voice-select { 
-                width: 100%; 
-            }
+            .audio-info span { white-space: normal; }
             
-            .speed-control-horizontal { 
-                width: 100%; 
-                justify-content: center; 
-            }
+            .progress-area { min-width: 150px; }
             
-            .scroll-hint-left, .scroll-hint-right {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .document-card { padding: 24px 16px; }
-            h1 { font-size: 1.8rem; }
-            .title-header h1 { font-size: 1.8rem; }
+            .document-card { padding: 24px 20px; }
+            
+            h2 { font-size: 1.4rem; }
+            h2 i { font-size: 1.5rem; }
+            
             .header-document { flex-direction: column; text-align: center; }
             .seal { margin: 0 auto; }
-            .meta-item { width: 100%; }
-            .assunto-box p { font-size: 1.1rem; }
-            h2 { font-size: 1.5rem; }
-            h2 i { font-size: 1.5rem; }
         }
 
-        @media (max-width: 400px) {
-            .document-card { padding: 16px 12px; }
-            .narration-btn { width: 45px; height: 45px; font-size: 1.2rem; }
-            .contact-info { flex-direction: column; gap: 15px; }
-        }
-
-        /* Estilo para listas com marcador */
-        .list-dot {
-            list-style: none;
-            padding-left: 20px;
-        }
-        .list-dot li::before {
-            content: "•";
-            color: #2e7d32;
-            font-weight: bold;
-            display: inline-block;
-            width: 20px;
-            margin-left: -20px;
+        @media (max-width: 480px) {
+            .audio-card {
+                flex-direction: column;
+                align-items: stretch;
+                border-radius: 30px;
+            }
+            
+            .audio-controls {
+                justify-content: space-between;
+            }
+            
+            .progress-area { flex: 1; }
+            
+            .volume-area { display: none; }
+            
+            .scroll-hint-left, .scroll-hint-right {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- INDICADORES DE ROLAGEM VERTICAL - IGUAL AO QUIZ -->
+    <!-- SCROLL HINTS -->
     <div class="scroll-hint-left" id="scrollLeftHint" onclick="window.scrollTo({top: window.scrollY - 300, behavior: 'smooth'})">
         <i class="fas fa-arrow-up"></i>
     </div>
@@ -644,37 +604,45 @@
         <i class="fas fa-arrow-down"></i>
     </div>
 
-    <div class="container" id="document-content">
-        <!-- CABEÇALHO DO NARRADOR COM FRASE INFORMATIVA -->
-        <div class="narration-header">
-            <i class="fas fa-volume-up"></i>
-            <strong>🔊 OUÇA ESTA PÁGINA</strong>
-            <i class="fas fa-arrow-down"></i>
-            <span>Clique nos botões abaixo para controlar a narração</span>
-            <i class="fas fa-hand-pointer"></i>
-        </div>
-        
-        <!-- BARRA DE CONTROLE DO NARRADOR - IGUAL AO QUIZ -->
-        <div class="narration-bar">
-            <div class="status-indicator" id="narrationStatus">
-                <i class="fas fa-microphone-alt"></i> 
-                <span class="status-text">Pronto para ouvir</span>
-            </div>
-            <div class="narration-controls">
-                <button class="narration-btn" id="playBtn" title="Ouvir documento"><i class="fas fa-play"></i></button>
-                <button class="narration-btn" id="pauseBtn" title="Pausar"><i class="fas fa-pause"></i></button>
-                <button class="narration-btn" id="stopBtn" title="Parar"><i class="fas fa-stop"></i></button>
-            </div>
-            <select class="voice-select" id="voiceSelect" aria-label="Selecionar voz">
-                <option>Carregando vozes...</option>
-            </select>
-            <div class="speed-control-horizontal">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>Velocidade</span>
-                <input type="range" id="rateControl" class="rate-control-horizontal" min="0.5" max="2" step="0.1" value="1">
+    <!-- PWA INSTALL PROMPT -->
+    <div class="install-prompt" id="installPrompt">
+        <span><i class="fas fa-download"></i> Instalar app</span>
+        <button class="install-btn" id="installBtn">
+            <i class="fas fa-mobile-alt"></i> Instalar
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- PLAYER FLUTUANTE MODERNO -->
+        <div class="audio-float">
+            <div class="audio-card">
+                <div class="audio-info">
+                    <i class="fas fa-headphones"></i>
+                    <span>Áudio do ofício</span>
+                </div>
+                
+                <div class="audio-controls">
+                    <button class="btn-circle" id="playPauseBtn" title="Ouvir/Pausar">
+                        <i class="fas fa-play" id="playPauseIcon"></i>
+                    </button>
+                    
+                    <div class="progress-area">
+                        <span id="currentTime">0:00</span>
+                        <div class="progress-bar-custom" id="progressBar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span id="duration">0:00</span>
+                    </div>
+                    
+                    <div class="volume-area">
+                        <i class="fas fa-volume-up"></i>
+                        <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="1">
+                    </div>
+                </div>
             </div>
         </div>
 
+        <!-- DOCUMENTO PRINCIPAL -->
         <div class="document-card">
             <!-- Cabeçalho -->
             <div class="header-document">
@@ -690,31 +658,31 @@
             <!-- Metadados -->
             <div class="meta-info">
                 <div class="meta-item"><i class="fas fa-map-pin"></i> <strong>Local:</strong> Xique Xique/BA</div>
-                <div class="meta-item"><i class="fas fa-calendar-alt"></i> <strong>Data:</strong> 07 de fevereiro de 2026</div>
+                <div class="meta-item"><i class="fas fa-calendar-alt"></i> <strong>Data:</strong> 07 fev 2026</div>
                 <div class="meta-item"><i class="fas fa-user-graduate"></i> <strong>Acadêmico:</strong> Rivonildo Azevedo</div>
-                <div class="meta-item"><i class="fas fa-university"></i> <strong>Curso:</strong> Engenharia de Software (Anhanguera)</div>
+                <div class="meta-item"><i class="fas fa-university"></i> <strong>Curso:</strong> Engenharia de Software</div>
             </div>
 
             <!-- Destinatário -->
             <div class="destinatario-box">
-                <p><i class="fas fa-user-tie"></i> <strong>Ilmo(a). Sr(a). Secretário(a) Municipal de Meio Ambiente e Urbanismo ou responsável</strong></p>
+                <p><i class="fas fa-user-tie"></i> <strong>Ilmo(a). Sr(a). Secretário(a) Municipal de Meio Ambiente e Urbanismo</strong></p>
                 <p>Prefeitura Municipal de Xique Xique/BA</p>
             </div>
 
             <!-- Assunto -->
             <div class="assunto-box">
                 <strong><i class="fas fa-bullhorn"></i> ASSUNTO</strong>
-                <p>Comunicação de ação comunitária de revitalização em andamento, formalização de Projeto de Extensão Universitária, e disponibilidade para parceria tecnológica para segurança pública e formação de jovens, alinhada aos Objetivos de Desenvolvimento Sustentável (ODS) da ONU.</p>
+                <p>COMUNICAÇÃO de ação comunitária de revitalização em andamento, FORMALIZAÇÃO de Projeto de Extensão Universitária, e REGISTRO de modelo replicável de desenvolvimento urbano inteligente e sustentável.</p>
             </div>
 
             <!-- Apresentação -->
             <h2><i class="fas fa-hand-paper"></i> APRESENTAÇÃO</h2>
             <p>Senhor(a) Secretário(a) ou responsável,</p>
-            <p>Eu, <strong>RIVONILDO AZEVEDO</strong>, acadêmico do curso de <strong>Engenharia de Software (Bacharelado)</strong> da <strong>Universidade Anhanguera</strong>, com formação e atuação na área de <strong>Tecnologia da Informação</strong>, venho respeitosamente à presença de Vossa Senhoria para:</p>
+            <p>Eu, <strong>RIVONILDO AZEVEDO</strong>, acadêmico do curso de <strong>Engenharia de Software</strong> da <strong>Universidade Anhanguera</strong>, com formação e atuação na área de <strong>Tecnologia da Informação</strong>, venho respeitosamente à presença de Vossa Senhoria para:</p>
             <ul class="list-tick">
-                <li><i class="fas fa-check-circle"></i> <strong>COMUNICAR</strong> a ação comunitária de revitalização que já está em andamento no espaço público localizado na entrada do bairro Santa Marta;</li>
+                <li><i class="fas fa-check-circle"></i> <strong>COMUNICAR</strong> a ação comunitária de revitalização em andamento no espaço público localizado na entrada do bairro Santa Marta;</li>
                 <li><i class="fas fa-check-circle"></i> <strong>APRESENTAR</strong> a formalização desta iniciativa como meu Projeto de Extensão III - Programa de Sustentabilidade;</li>
-                <li><i class="fas fa-check-circle"></i> <strong>DISPONIBILIZAR</strong> parceria tecnológica para fortalecimento da segurança pública e para formação de jovens em TI, caso haja interesse da Prefeitura;</li>
+                <li><i class="fas fa-check-circle"></i> <strong>DISPONIBILIZAR</strong> o material desenvolvido como modelo para outras comunidades;</li>
                 <li><i class="fas fa-check-circle"></i> <strong>DEMONSTRAR</strong> o alinhamento do projeto com os Objetivos de Desenvolvimento Sustentável (ODS) da Agenda 2030 da ONU.</li>
             </ul>
 
@@ -723,10 +691,10 @@
             <p><strong>1.1 LOCAL DO PROJETO</strong><br>
             • Endereço: Início da rua Oriente, ao lado da Rodoviária e da BA 052<br>
             • Bairro: Santa Marta, Xique Xique/BA<br>
-            • Situação atual: área degradada (valeta a céu aberto e descarte irregular de resíduos)</p>
+            • Situação anterior: área degradada com valeta a céu aberto e descarte irregular de resíduos</p>
             <p><strong>1.2 PERÍODO DE REALIZAÇÃO</strong><br>
             • Início: Fevereiro de 2026<br>
-            • Ações em andamento com mutirões voluntários da comunidade</p>
+            • Ações contínuas com mutirões voluntários da comunidade</p>
 
             <p><strong>1.3 AÇÕES EM ANDAMENTO</strong></p>
             <div class="table-responsive">
@@ -750,161 +718,113 @@
             <!-- 2. Formalização -->
             <h2><i class="fas fa-graduation-cap"></i> 2. DA FORMALIZAÇÃO COMO PROJETO DE EXTENSÃO</h2>
             <p>Diante da relevância da iniciativa e do envolvimento comunitário já consolidado, optei por formalizar esta ação como meu Projeto de Extensão III, vinculado ao Programa de Sustentabilidade da Universidade Anhanguera.</p>
-            <p><strong>2.1 OBJETIVO DA FORMALIZAÇÃO</strong><br>O projeto acadêmico NÃO substitui a ação comunitária, mas sim a qualifica e amplia, agregando:</p>
+            <p><strong>2.1 COMPONENTES DO PROJETO</strong></p>
             <div class="table-responsive">
                 <table>
                     <thead><tr><th>#</th><th>COMPONENTE</th><th>DESCRIÇÃO</th></tr></thead>
                     <tbody>
                         <tr><td>1</td><td>Plataforma web educativa</td><td>Quiz interativo com 50 perguntas sobre plantas, infância, comunidade e futuro</td></tr>
-                        <tr><td>2</td><td>Placas com QR Codes</td><td>Acesso rápido a informações educativas sobre cada planta (já em produção)</td></tr>
-                        <tr><td>3</td><td>Sistema de monitoramento</td><td>Para registrar e analisar os acessos (entendimento do engajamento)</td></tr>
-                        <tr><td>4</td><td>Documentação sistematizada</td><td>Modelo replicável para outras áreas do município</td></tr>
+                        <tr><td>2</td><td>Placas com QR Codes</td><td>Acesso rápido a informações educativas sobre cada planta</td></tr>
+                        <tr><td>3</td><td>Sistema de monitoramento</td><td>Análise de engajamento e dados de acesso</td></tr>
+                        <tr><td>4</td><td>Material desenvolvido</td><td>Disponibilizado para replicação em outras comunidades</td></tr>
                     </tbody>
                 </table>
             </div>
-            <p><strong>2.2 META PRINCIPAL</strong><br>Que a experiência adquirida neste espaço sirva como MODELO PILOTO para outras comunidades interessadas em revitalização participativa.</p>
 
-            <!-- 3. Monitoramento -->
-            <h2><i class="fas fa-video"></i> 3. DA AÇÃO COMPLEMENTAR VOLUNTÁRIA (MONITORAMENTO)</h2>
-            <p>Como medida complementar de segurança e para demonstrar o compromisso com a preservação do espaço revitalizado, instalei uma câmera de monitoramento em minha residência, localizada em frente à área do projeto.</p>
-            <p><strong>3.1 CARACTERÍSTICAS TÉCNICAS E LEGAIS DA CÂMERA</strong></p>
+            <!-- 3. Monitoramento Voluntário -->
+            <h2><i class="fas fa-video"></i> 3. DA AÇÃO COMPLEMENTAR VOLUNTÁRIA</h2>
+            <p>Como medida complementar de segurança e para demonstrar o compromisso com a preservação do espaço revitalizado, <strong>está em operação</strong> uma câmera de monitoramento em residência localizada em frente à área do projeto.</p>
+            <p><strong>3.1 CARACTERÍSTICAS TÉCNICAS</strong></p>
             <ul class="list-tick">
-                <li><i class="fas fa-check-circle"></i> Captação de imagem apenas (sem áudio)</li>
+                <li><i class="fas fa-check-circle"></i> Captação de imagem apenas (sem áudio, conforme LGPD)</li>
                 <li><i class="fas fa-check-circle"></i> Ângulo ajustado para não incidir sobre propriedades vizinhas</li>
                 <li><i class="fas fa-check-circle"></i> Placa de aviso instalada em local visível</li>
                 <li><i class="fas fa-check-circle"></i> Armazenamento temporário (30 dias) com descarte seguro</li>
-                <li><i class="fas fa-check-circle"></i> Acesso restrito (apenas o responsável)</li>
-            </ul>
-            <p><strong>3.2 OBJETIVOS DESTA AÇÃO</strong></p>
-            <ul class="list-tick">
-                <li><i class="fas fa-check-circle"></i> Aumentar a sensação de segurança da comunidade</li>
-                <li><i class="fas fa-check-circle"></i> Inibir possíveis ações de vandalismo</li>
-                <li><i class="fas fa-check-circle"></i> Servir como experiência piloto para futura integração com sistemas municipais</li>
-                <li><i class="fas fa-check-circle"></i> Demonstrar a viabilidade técnica de parcerias público-comunitárias</li>
             </ul>
 
             <!-- 4. Alinhamento legal -->
-            <h2><i class="fas fa-gavel"></i> 4. DO PROJETO DE EXTENSÃO E ALINHAMENTO LEGAL</h2>
-            <p><strong>4.1 LEI FEDERAL Nº 15.333/26</strong><br>O projeto está em total conformidade com a recente Lei Federal nº 15.333, de 7 de janeiro de 2026, que inclui a manutenção de praças e a adequada sinalização de equipamentos públicos entre as diretrizes da política urbana brasileira.</p>
-            <p><strong>4.2 CONTRIBUIÇÕES DIRETAS DA LEI</strong></p>
-            <ul class="list-tick">
-                <li><i class="fas fa-check-circle"></i> A sinalização adequada do espaço público (placas com QR Codes)</li>
-                <li><i class="fas fa-check-circle"></i> A conservação e higienização do ambiente</li>
-                <li><i class="fas fa-check-circle"></i> A prevenção de riscos à integridade física dos usuários</li>
-                <li><i class="fas fa-check-circle"></i> A promoção da saúde e do bem-estar da comunidade</li>
-            </ul>
+            <h2><i class="fas fa-gavel"></i> 4. DO ALINHAMENTO LEGAL</h2>
+            <p><strong>4.1 LEI FEDERAL Nº 15.333/26</strong><br>O projeto está em conformidade com a Lei Federal nº 15.333, de 7 de janeiro de 2026, que inclui a manutenção de praças e a adequada sinalização de equipamentos públicos entre as diretrizes da política urbana brasileira.</p>
 
             <!-- 5. ODS -->
-            <h2><i class="fas fa-globe-americas"></i> 5. DO ALINHAMENTO COM OS OBJETIVOS DE DESENVOLVIMENTO SUSTENTÁVEL (ODS)</h2>
-            <p>Os Objetivos de Desenvolvimento Sustentável são um apelo global à ação para acabar com a pobreza, proteger o meio ambiente e garantir que todas as pessoas possam desfrutar de paz e prosperidade.</p>
-            <p><strong>5.1 ODS CONTEMPLADOS PELO PROJETO</strong></p>
+            <h2><i class="fas fa-globe-americas"></i> 5. DO ALINHAMENTO COM OS ODS</h2>
+            <p>O projeto contribui diretamente com 7 Objetivos de Desenvolvimento Sustentável da ONU, conforme detalhado no material de divulgação disponível nos QR Codes do local.</p>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>ODS</th><th>DESCRIÇÃO</th><th>CONTRIBUIÇÃO DO PROJETO</th></tr></thead>
+                    <thead><tr><th>ODS</th><th>DESCRIÇÃO</th></tr></thead>
                     <tbody>
-                        <tr><td>ODS 3</td><td>SAÚDE E BEM-ESTAR</td><td>Plantio de 8 plantas medicinais (boldo, hortelã, erva-cidreira, etc.) para acesso da comunidade a remédios naturais. Espaço de convivência que promove saúde mental e redução do estresse.</td></tr>
-                        <tr><td>ODS 4</td><td>EDUCAÇÃO DE QUALIDADE</td><td>Plataforma web educativa (quiz interativo). Placas com QR Codes que transformam a praça em "sala de aula ao ar livre". Futuras oficinas de TI para jovens da cidade.</td></tr>
-                        <tr><td>ODS 9</td><td>INDÚSTRIA, INOVAÇÃO E INFRAESTRUTURA</td><td>Aplicação de tecnologia social (QR Codes, plataforma web). Projeto piloto para câmeras inteligentes (IoT). Uso de materiais reciclados (pneus, palets) na construção de mobiliário urbano.</td></tr>
-                        <tr><td>ODS 11</td><td>CIDADES E COMUNIDADES SUSTENTÁVEIS</td><td>Revitalização de área degradada. Aumento da arborização com 16 espécies. Criação de espaço público acessível e seguro para toda a comunidade.</td></tr>
-                        <tr><td>ODS 12</td><td>CONSUMO E PRODUÇÃO RESPONSÁVEIS</td><td>Reutilização de pneus e palets na construção de bancos e mesas. Educação ambiental sobre descarte correto de resíduos. Composteira comunitária (futuro).</td></tr>
-                        <tr><td>ODS 13</td><td>AÇÃO CONTRA A MUDANÇA GLOBAL DO CLIMA</td><td>Plantio de árvores que ajudam a reduzir ilhas de calor e absorver carbono. Educação climática integrada ao conteúdo dos QR Codes.</td></tr>
-                        <tr><td>ODS 15</td><td>VIDA TERRESTRE</td><td>Recuperação do solo contaminado. Plantio de espécies nativas e frutíferas. Criação de microecossistema urbano com retorno da fauna local (pássaros, abelhas).</td></tr>
+                        <tr><td>ODS 3</td><td>Saúde e bem-estar - plantas medicinais</td></tr>
+                        <tr><td>ODS 4</td><td>Educação de qualidade - plataforma educativa</td></tr>
+                        <tr><td>ODS 9</td><td>Inovação e infraestrutura - tecnologia social</td></tr>
+                        <tr><td>ODS 11</td><td>Cidades sustentáveis - revitalização</td></tr>
+                        <tr><td>ODS 12</td><td>Consumo responsável - materiais reciclados</td></tr>
+                        <tr><td>ODS 13</td><td>Ação climática - arborização</td></tr>
+                        <tr><td>ODS 15</td><td>Vida terrestre - recuperação do solo</td></tr>
                     </tbody>
                 </table>
             </div>
-            <p><strong>5.2 SIGNIFICADO DESTE ALINHAMENTO</strong><br>Este alinhamento demonstra que o projeto NÃO é apenas uma iniciativa local, mas parte de um ESFORÇO GLOBAL para construir um futuro mais sustentável, equilibrando as dimensões social, econômica e ambiental do desenvolvimento.</p>
 
-            <!-- 6. Parceria tecnológica -->
-            <h2><i class="fas fa-handshake"></i> 6. DA DISPONIBILIDADE PARA PARCERIA TECNOLÓGICA</h2>
-            <p>Como profissional da área de Tecnologia da Informação e acadêmico de Engenharia de Software, tenho conhecimento e interesse em colaborar com o município em duas frentes principais, caso haja interesse da Prefeitura, ambas alinhadas aos ODS.</p>
-            <p><strong>6.1 EIXO 1 – SEGURANÇA PÚBLICA (ODS 9 e ODS 11)</strong></p>
+            <!-- 6. Contribuição e Disponibilidade -->
+            <h2><i class="fas fa-handshake"></i> 6. DA CONTRIBUIÇÃO E DISPONIBILIDADE</h2>
+            <p>Todo o material desenvolvido neste projeto encontra-se disponível para livre utilização por parte da comunidade e do poder público, incluindo metodologias, plataformas educativas e soluções tecnológicas aplicadas.</p>
+            
+            <p>Como profissional de Tecnologia da Informação e acadêmico de Engenharia de Software, coloco à disposição conhecimentos nas áreas de:</p>
             <ul class="list-tick">
-                <li><i class="fas fa-check-circle"></i> Compartilhar a experiência piloto do monitoramento realizado como estudo de caso para projetos municipais</li>
-                <li><i class="fas fa-check-circle"></i> Auxiliar tecnicamente na análise de viabilidade para integração de câmeras a redes municipais, aplicando conceitos de redes de computadores aprendidos durante a graduação, como topologias de rede, protocolos de comunicação, infraestrutura de transmissão de dados e boas práticas de segurança da informação</li>
-                <li><i class="fas fa-check-circle"></i> Contribuir com levantamento de requisitos técnicos e elaboração de documentação para projetos de cidades inteligentes na área de videomonitoramento</li>
-                <li><i class="fas fa-check-circle"></i> Auxiliar na análise de dados e estatísticas de ocorrências, gerando relatórios informativos que possam apoiar a tomada de decisão da gestão municipal</li>
-                <li><i class="fas fa-check-circle"></i> Atuar como ponto focal entre a comunidade e o poder público, facilitando o diálogo e a construção conjunta de soluções</li>
+                <li><i class="fas fa-check-circle"></i> Desenvolvimento de soluções tecnológicas para espaços públicos</li>
+                <li><i class="fas fa-check-circle"></i> Incentivo e formação de jovens em Tecnologia da Informação</li>
+                <li><i class="fas fa-check-circle"></i> Expansão do modelo para outras áreas do município</li>
+                <li><i class="fas fa-check-circle"></i> Construção conjunta de soluções que integrem tecnologia, participação comunitária e melhoria da qualidade de vida, dentro da perspectiva de desenvolvimento urbano inteligente e sustentável</li>
             </ul>
-            <p><strong>6.2 EIXO 2 – FORMAÇÃO DE JOVENS EM TECNOLOGIA DA INFORMAÇÃO (ODS 4 e ODS 8)</strong></p>
-            <ul class="list-tick">
-                <li><i class="fas fa-check-circle"></i> Ministrar oficinas básicas de informática e cidadania digital para jovens da cidade</li>
-                <li><i class="fas fa-check-circle"></i> Ensinar noções de programação, lógica e pensamento computacional</li>
-                <li><i class="fas fa-check-circle"></i> Orientar sobre uso seguro da internet e oportunidades profissionais na área de TI</li>
-                <li><i class="fas fa-check-circle"></i> Estimular o protagonismo juvenil por meio da tecnologia</li>
-                <li><i class="fas fa-check-circle"></i> Criar um projeto piloto de inclusão digital que pode ser expandido para escolas municipais</li>
-            </ul>
-            <p><strong>6.3 VISÃO GERAL DA PARCERIA</strong><br>Acredito que a tecnologia pode ser uma poderosa ferramenta de transformação social, tanto na segurança quanto na formação de novas gerações para o mercado de trabalho e para a cidadania, contribuindo para:</p>
-            <ul class="list-tick">
-                <li><i class="fas fa-check-circle"></i> A redução das desigualdades (ODS 10)</li>
-                <li><i class="fas fa-check-circle"></i> O crescimento econômico local (ODS 8)</li>
-            </ul>
+            
+            <p>Estou à disposição para compartilhar experiências e colaborar tecnicamente sempre que houver interesse da administração municipal.</p>
 
-            <!-- 7. Pedido formal -->
-            <h2><i class="fas fa-file-signature"></i> 7. DO PEDIDO FORMAL</h2>
-            <p>Diante do exposto, e considerando que a ação comunitária já está em andamento com ampla participação popular, por direito assegurado pela legislação vigente para realização de projetos de extensão universitária e ações comunitárias, venho formalmente apresentar:</p>
-            <ul class="list-tick">
-                <li><i class="fas fa-check-circle"></i> <strong>a) A COMUNICAÇÃO</strong> da manutenção e continuidade da ação comunitária no espaço público mencionado;</li>
-                <li><i class="fas fa-check-circle"></i> <strong>b) A INFORMAÇÃO</strong> sobre a instalação das placas educativas com QR Codes, parte integrante do projeto de extensão;</li>
-                <li><i class="fas fa-check-circle"></i> <strong>c) A CIÊNCIA</strong> sobre a manutenção periódica do mobiliário e das plantas, realizada pela comunidade;</li>
-                <li><i class="fas fa-check-circle"></i> <strong>d) A SOLICITAÇÃO</strong> de eventuais adequações que Vossa Senhoria julgar necessárias para melhor integração com as políticas municipais;</li>
-                <li><i class="fas fa-check-circle"></i> <strong>e) O REGISTRO FORMAL DE INTERESSE</strong> para futuras colaborações nas áreas de:
-                    <ul class="list-dot" style="margin-left:40px; margin-top:5px;">
-                        <li>Apoio técnico aos setores de computação das Secretarias;</li>
-                        <li>Projetos para segurança pública com monitoramento de praças e pontos estratégicos</li>
-                        <li>Projetos de incentivo aos jovens em Tecnologia da Informação</li>
-                        <li>Expansão do modelo para outras áreas do município e construção conjunta de novas soluções que integrem tecnologia, participação comunitária e melhoria da qualidade de vida, dentro da perspectiva de desenvolvimento urbano inteligente e sustentável.</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <!-- 8. Compromisso -->
-            <h2><i class="fas fa-heart"></i> 8. COMPROMISSO</h2>
-            <p>Ressalto que todas as ações realizadas até o momento contaram exclusivamente com esforço voluntário da comunidade, e que a presente formalização busca apenas:</p>
+            <!-- 7. Compromisso -->
+            <h2><i class="fas fa-heart"></i> 7. COMPROMISSO</h2>
+            <p>Todas as ações em andamento contam exclusivamente com esforço voluntário da comunidade. Esta formalização tem como objetivos:</p>
             <ul class="list-tick">
                 <li><i class="fas fa-check-circle"></i> Dar transparência ao trabalho realizado</li>
                 <li><i class="fas fa-check-circle"></i> Garantir a continuidade das ações</li>
                 <li><i class="fas fa-check-circle"></i> Qualificar a iniciativa com respaldo acadêmico</li>
-                <li><i class="fas fa-check-circle"></i> Manter diálogo respeitoso com o poder público</li>
+                <li><i class="fas fa-check-circle"></i> Disponibilizar o modelo para quem tiver interesse</li>
             </ul>
 
-            <!-- 9. Disponibilidade -->
-            <h2><i class="fas fa-calendar-check"></i> 9. DISPONIBILIDADE</h2>
+            <!-- 8. Disponibilidade -->
+            <h2><i class="fas fa-calendar-check"></i> 8. DISPONIBILIDADE</h2>
             <p>Coloco-me à disposição para:</p>
             <ul class="list-tick">
-                <li><i class="fas fa-check-circle"></i> Esclarecimentos adicionais por telefone ou e-mail</li>
-                <li><i class="fas fa-check-circle"></i> Reunião presencial, no momento mais conveniente</li>
-                <li><i class="fas fa-check-circle"></i> Visita técnica ao local para demonstração das ações</li>
+                <li><i class="fas fa-check-circle"></i> Esclarecimentos adicionais sobre a metodologia</li>
+                <li><i class="fas fa-check-circle"></i> Demonstração prática do funcionamento das plataformas</li>
+                <li><i class="fas fa-check-circle"></i> Compartilhamento dos materiais desenvolvidos</li>
             </ul>
 
-            <!-- 10. Da possibilidade de apoio da Prefeitura -->
-            <h2><i class="fas fa-hand-holding-heart"></i> 10. DA POSSIBILIDADE DE APOIO DA PREFEITURA</h2>
-            <p>Ressalto que todas as ações realizadas até o momento contaram exclusivamente com esforço voluntário da comunidade, utilizando materiais reciclados (pneus, palets) e a força de trabalho dos moradores. Caso haja interesse da administração municipal em fortalecer esta iniciativa, estamos abertos ao diálogo para:</p>
+            <!-- 9. DOS LIMITES DA AÇÃO COMUNITÁRIA E NECESSIDADE DE APOIO ESTRUTURAL -->
+            <h2><i class="fas fa-hard-hat"></i> 9. DOS LIMITES DA AÇÃO COMUNITÁRIA</h2>
+            <p>Apesar de todo o esforço voluntário e dos resultados alcançados, existem questões estruturais que a comunidade, por seus próprios meios, não consegue resolver, tais como:</p>
             <ul class="list-tick">
-                <li><i class="fas fa-check-circle"></i> Melhorar a infraestrutura do espaço com equipamentos adequados</li>
-                <li><i class="fas fa-check-circle"></i> Viabilizar a instalação de pontos de iluminação mais eficientes</li>
-                <li><i class="fas fa-check-circle"></i> Apoiar a manutenção contínua das áreas verdes</li>
-                <li><i class="fas fa-check-circle"></i> Fortalecer as ações de educação ambiental nas escolas do município</li>
-                <li><i class="fas fa-check-circle"></i> Expandir o modelo para outros bairros que necessitam de revitalização</li>
+                <li><i class="fas fa-exclamation-triangle" style="color: var(--accent);"></i> <strong>Valeta a céu aberto:</strong> problema de drenagem que oferece risco à saúde e à segurança;</li>
+                <li><i class="fas fa-exclamation-triangle" style="color: var(--accent);"></i> <strong>Pavimentação e acessibilidade:</strong> condições inadequadas para pedestres, especialmente idosos e pessoas com deficiência;</li>
+                <li><i class="fas fa-exclamation-triangle" style="color: var(--accent);"></i> <strong>Iluminação pública:</strong> pontos insuficientes ou inoperantes, comprometendo a segurança noturna.</li>
             </ul>
-            <p>Acreditamos que a união entre comunidade e poder público é o caminho mais eficaz para transformar Xique Xique em uma referência de sustentabilidade e cidadania.</p>
+            <p>Diante disso, contamos com a sensibilidade e o apoio da Prefeitura Municipal para que, por meio de sua estrutura e competência, possamos juntos <strong>transformar este espaço não apenas em um ponto de convivência, mas em uma área plenamente revitalizada, segura e acessível</strong> para toda a população.</p>
+            <p style="font-weight: 500; color: var(--primary-dark);">A comunidade <strong>está fazendo a sua parte</strong>. Agora, com o suporte do poder público, podemos dar o próximo passo.</p>
 
             <!-- Assinatura -->
             <div class="assinatura">
-                <p style="font-size:1.2rem;">ATENCIOSAMENTE,</p>
+                <p style="font-size:1.1rem; color: var(--text-soft);">ATENCIOSAMENTE,</p>
                 <div class="line-sign"></div>
-                <p style="font-weight:700; font-size:1.5rem;">Rivonildo Azevedo</p>
-                <p>Acadêmico de Engenharia de Software (Bacharelado)</p>
+                <p style="font-weight:700; font-size:1.5rem; color: var(--primary-dark);">Rivonildo Azevedo</p>
+                <p>Acadêmico de Engenharia de Software</p>
                 <p>Universidade Anhanguera – 1º semestre/2026</p>
                 <p>Profissional de Tecnologia da Informação</p>
                 <p>Responsável pelo Projeto de Extensão III - Programa de Sustentabilidade</p>
                 <div class="contact-info">
                     <span><i class="fas fa-phone-alt"></i> (74) 98133-4625</span>
                     <span><i class="fas fa-envelope"></i> rivonildoazevedo@gmail.com</span>
-                    <span><i class="fas fa-home"></i> Rua Oriente, 111 – Santa Marta – Xique Xique/BA<br>(em frente à área que está sendo revitalizada)</span>
+                    <span><i class="fas fa-home"></i> Rua Oriente, 111 – Santa Marta – Xique Xique/BA</span>
                 </div>
-                <p style="margin-top:24px;"><i class="far fa-calendar-alt"></i> DOCUMENTO ELABORADO EM 07 DE FEVEREIRO DE 2026.</p>
+                <p style="margin-top:20px;"><i class="far fa-calendar-alt"></i> 07 de fevereiro de 2026</p>
             </div>
-        </div> <!-- fim document-card -->
+        </div>
 
         <footer>
             <i class="fas fa-leaf"></i> Projeto de Extensão III – Engenharia de Software – Universidade Anhanguera
@@ -912,260 +832,133 @@
     </div>
 
     <script>
-        // ==================== INDICADOR INTELIGENTE DE ROLAGEM ====================
+        // ==================== PLAYER DE ÁUDIO MODERNO ====================
+        const audio = new Audio();
+        audio.src = 'oficio-narracao.mp3'; // Coloque seu arquivo MP3 aqui
+        
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const playPauseIcon = document.getElementById('playPauseIcon');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const currentTimeSpan = document.getElementById('currentTime');
+        const durationSpan = document.getElementById('duration');
+        const volumeControl = document.getElementById('volumeControl');
+        
+        let isPlaying = false;
+        
+        playPauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
+                playPauseIcon.className = 'fas fa-play';
+            } else {
+                audio.play();
+                playPauseIcon.className = 'fas fa-pause';
+            }
+            isPlaying = !isPlaying;
+        });
+        
+        audio.addEventListener('timeupdate', () => {
+            const current = audio.currentTime;
+            const duration = audio.duration;
+            
+            if (duration) {
+                const percent = (current / duration) * 100;
+                progressFill.style.width = percent + '%';
+                
+                currentTimeSpan.textContent = formatTime(current);
+                durationSpan.textContent = formatTime(duration);
+            }
+        });
+        
+        audio.addEventListener('loadedmetadata', () => {
+            durationSpan.textContent = formatTime(audio.duration);
+        });
+        
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const width = rect.width;
+            const percent = clickX / width;
+            
+            audio.currentTime = percent * audio.duration;
+        });
+        
+        volumeControl.addEventListener('input', (e) => {
+            audio.volume = e.target.value;
+        });
+        
+        audio.addEventListener('ended', () => {
+            isPlaying = false;
+            playPauseIcon.className = 'fas fa-play';
+            progressFill.style.width = '0%';
+            currentTimeSpan.textContent = '0:00';
+        });
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return mins + ':' + (secs < 10 ? '0' : '') + secs;
+        }
+
+        // ==================== SCROLL HINTS ====================
         const scrollLeftHint = document.getElementById('scrollLeftHint');
         const scrollRightHint = document.getElementById('scrollRightHint');
         let hasScrolled = false;
-        let hasHintShown = false;
+        let hintTimeout;
 
-        if (scrollLeftHint && scrollRightHint) {
-            window.addEventListener('scroll', () => {
-                if (!hasScrolled && window.scrollY > 100) {
-                    hasScrolled = true;
-                    scrollLeftHint.style.display = 'none';
-                    scrollRightHint.style.display = 'none';
-                }
-            });
-
-            setTimeout(() => {
-                if (!hasScrolled && !hasHintShown) {
-                    scrollLeftHint.style.display = 'flex';
-                    scrollRightHint.style.display = 'flex';
-                    hasHintShown = true;
-                    setTimeout(() => {
-                        if (!hasScrolled) {
-                            scrollLeftHint.style.opacity = '0';
-                            scrollRightHint.style.opacity = '0';
-                            setTimeout(() => {
-                                scrollLeftHint.style.display = 'none';
-                                scrollRightHint.style.display = 'none';
-                            }, 1000);
-                        }
-                    }, 15000);
-                }
-            }, 5000);
+        function showHints() {
+            scrollLeftHint.classList.add('visible');
+            scrollRightHint.classList.add('visible');
         }
 
-        // ==================== NARRAÇÃO - IMPLEMENTAÇÃO ROBUSTA IGUAL AO QUIZ ====================
-        
-        (function() {
-            // Verificar suporte
-            if (!window.speechSynthesis) {
-                console.error('API speechSynthesis não suportada');
-                document.querySelectorAll('.narration-btn, .voice-select, .rate-control-horizontal').forEach(el => {
-                    if (el) el.disabled = true;
-                });
-                const statusSpan = document.querySelector('#narrationStatus .status-text');
-                if (statusSpan) statusSpan.textContent = 'Narração não suportada';
-                return;
-            }
+        function hideHints() {
+            scrollLeftHint.classList.remove('visible');
+            scrollRightHint.classList.remove('visible');
+        }
 
-            let synthesis = window.speechSynthesis;
-            let utterance = null;
-            let voices = [];
+        window.addEventListener('scroll', () => {
+            if (!hasScrolled && window.scrollY > 50) {
+                hasScrolled = true;
+                hideHints();
+            }
+        });
+
+        setTimeout(() => {
+            if (!hasScrolled) {
+                showHints();
+                setTimeout(hideHints, 8000);
+            }
+        }, 2000);
+
+        // ==================== PWA INSTALL ====================
+        let deferredPrompt;
+        const installPrompt = document.getElementById('installPrompt');
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            setTimeout(() => {
+                installPrompt.classList.add('show');
+            }, 3000);
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
             
-            // Elementos
-            const playBtn = document.getElementById('playBtn');
-            const pauseBtn = document.getElementById('pauseBtn');
-            const stopBtn = document.getElementById('stopBtn');
-            const voiceSelect = document.getElementById('voiceSelect');
-            const rateControl = document.getElementById('rateControl');
-            const statusSpan = document.querySelector('#narrationStatus .status-text');
-
-            if (!playBtn || !pauseBtn || !stopBtn || !voiceSelect || !rateControl || !statusSpan) {
-                console.error('Elementos de narração não encontrados');
-                return;
-            }
-
-            // Função para atualizar status
-            function setStatus(text) {
-                if (statusSpan) statusSpan.textContent = text;
-            }
-
-            // Função para limpar texto
-            function cleanTextForNarration(text) {
-                if (!text) return '';
-                
-                return text
-                    .replace(/[┌─┐│├┼┘└┴┬┤┴╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬╭╮╯╰]+/g, ' ')
-                    .replace(/-{10,}/g, ' ')
-                    .replace(/[□○●■◆★☆♥♦♣♠▪▫▬▲▼►◄◊○◌◍◎●◐◑◒◓◔◕◖◗◘◙◚◛◜◝◞◟◠◡◢◣◤◥◦◧◨◩◪◫◬◭◮◯]/g, ' ')
-                    .replace(/\s+/g, ' ')
-                    .trim();
-            }
-
-            // Função para obter texto
-            function getDocumentText() {
-                const documentCard = document.querySelector('.document-card');
-                if (!documentCard) return '';
-                
-                const clone = documentCard.cloneNode(true);
-                
-                const removeSelectors = [
-                    '.table-responsive',
-                    '.narration-bar',
-                    '.narration-header',
-                    'button',
-                    '.voice-select',
-                    '.rate-control-horizontal',
-                    'footer'
-                ];
-                
-                removeSelectors.forEach(selector => {
-                    const elements = clone.querySelectorAll(selector);
-                    elements.forEach(el => el.remove());
-                });
-                
-                let text = clone.innerText || clone.textContent;
-                return cleanTextForNarration(text);
-            }
-
-            // Carregar vozes
-            function loadVoices() {
-                try {
-                    voices = synthesis.getVoices();
-                    if (!voiceSelect) return;
-                    
-                    voiceSelect.innerHTML = '';
-                    
-                    if (voices.length === 0) {
-                        const option = document.createElement('option');
-                        option.value = '';
-                        option.textContent = 'Nenhuma voz disponível';
-                        voiceSelect.appendChild(option);
-                        return;
-                    }
-                    
-                    const ptVoices = voices.filter(v => v.lang && v.lang.includes('pt'));
-                    const otherVoices = voices.filter(v => !v.lang || !v.lang.includes('pt'));
-                    
-                    [...ptVoices, ...otherVoices].forEach(voice => {
-                        const option = document.createElement('option');
-                        option.value = voice.name;
-                        option.textContent = `${voice.name} (${voice.lang || 'idioma desconhecido'})`;
-                        voiceSelect.appendChild(option);
-                    });
-                    
-                    if (ptVoices.length > 0) {
-                        voiceSelect.value = ptVoices[0].name;
-                    }
-                    
-                    console.log('Vozes carregadas:', voices.length);
-                } catch (e) {
-                    console.error('Erro ao carregar vozes:', e);
-                }
-            }
-
-            if (speechSynthesis.onvoiceschanged !== undefined) {
-                speechSynthesis.onvoiceschanged = loadVoices;
-            }
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
             
-            setTimeout(loadVoices, 100);
-
-            // Play
-            if (playBtn) {
-                playBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    try {
-                        if (synthesis.speaking && synthesis.paused) {
-                            synthesis.resume();
-                            setStatus('Ouvindo...');
-                            return;
-                        }
-                        
-                        if (synthesis.speaking) {
-                            synthesis.cancel();
-                        }
-                        
-                        const text = getDocumentText();
-                        if (!text || text.length < 20) {
-                            setStatus('Texto não disponível');
-                            return;
-                        }
-                        
-                        utterance = new SpeechSynthesisUtterance(text);
-                        
-                        if (voiceSelect && voiceSelect.value) {
-                            const selectedVoice = voices.find(v => v.name === voiceSelect.value);
-                            if (selectedVoice) {
-                                utterance.voice = selectedVoice;
-                            }
-                        }
-                        
-                        utterance.rate = rateControl ? parseFloat(rateControl.value) : 1;
-                        utterance.lang = 'pt-BR';
-                        utterance.volume = 1;
-                        utterance.pitch = 1;
-                        
-                        utterance.onstart = function() { setStatus('Ouvindo...'); };
-                        utterance.onpause = function() { setStatus('Pausado'); };
-                        utterance.onresume = function() { setStatus('Ouvindo...'); };
-                        utterance.onend = function() { setStatus('Finalizado'); };
-                        utterance.onerror = function(event) {
-                            console.error('Erro na narração:', event);
-                            setStatus('Erro ao narrar');
-                        };
-                        
-                        synthesis.speak(utterance);
-                        
-                    } catch (e) {
-                        console.error('Erro no play:', e);
-                        setStatus('Erro ao iniciar');
-                    }
-                });
+            if (outcome === 'accepted') {
+                installPrompt.classList.remove('show');
             }
+            deferredPrompt = null;
+        });
 
-            // Pause
-            if (pauseBtn) {
-                pauseBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    try {
-                        if (synthesis.speaking && !synthesis.paused) {
-                            synthesis.pause();
-                        }
-                    } catch (e) {
-                        console.error('Erro no pause:', e);
-                    }
-                });
-            }
-
-            // Stop
-            if (stopBtn) {
-                stopBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    try {
-                        if (synthesis.speaking) {
-                            synthesis.cancel();
-                            setStatus('Parado');
-                        }
-                    } catch (e) {
-                        console.error('Erro no stop:', e);
-                    }
-                });
-            }
-
-            // Velocidade
-            if (rateControl) {
-                rateControl.addEventListener('input', function(e) {
-                    try {
-                        if (utterance && synthesis.speaking) {
-                            utterance.rate = parseFloat(e.target.value);
-                        }
-                    } catch (e) {
-                        console.error('Erro ao ajustar velocidade:', e);
-                    }
-                });
-            }
-
-            window.addEventListener('beforeunload', function() {
-                if (synthesis.speaking) {
-                    synthesis.cancel();
-                }
-            });
-
-            console.log('Sistema de narração inicializado');
-        })();
+        window.addEventListener('appinstalled', () => {
+            installPrompt.classList.remove('show');
+        });
     </script>
 </body>
 </html>
