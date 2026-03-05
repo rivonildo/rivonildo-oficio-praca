@@ -368,6 +368,33 @@
             text-align: center;
         }
 
+        /* ===== CSS DO BOTÃO DOCS NOS ANEXOS ===== */
+        .btn-anexo {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--verde-claro);
+            color: white !important;
+            font-size: .75rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 40px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin-left: 8px;
+            border: 1px solid transparent;
+        }
+
+        .btn-anexo:hover {
+            background: var(--verde);
+            transform: translateY(-1px);
+        }
+
+        .btn-anexo i {
+            color: white !important;
+            font-size: .8rem;
+        }
+
         .loading-audio {
             display: none;
             align-items: center;
@@ -1412,7 +1439,7 @@
             <span class="doc-subtitle">Projeto Praça Inteligente Santa Marta</span>
             <div class="meta-grid">
                 <div class="meta-pill"><i class="fas fa-map-marker-alt"></i> Xique Xique/BA</div>
-                <div class="meta-pill"><i class="fas fa-calendar-alt"></i> Data: 05 mar 2026</div>
+                <div class="meta-pill"><i class="fas fa-calendar-alt"></i> Data: 02 mar 2026</div>
                 <div class="meta-pill"><i class="fas fa-user-graduate"></i> Acadêmico: Rivonildo Azevedo</div>
                 <div class="meta-pill"><i class="fas fa-university"></i> Engenharia de Software - Anhanguera</div>
             </div>
@@ -1785,25 +1812,31 @@
         <div class="anexos-card">
             <h3><i class="fas fa-paperclip"></i> Anexos</h3>
             <div class="anexo-item"><i class="fas fa-images"></i> <strong>Anexo I</strong> - relatório fotográfico
-                das ações realizadas (impresso e link digital)</div>
+                das ações realizadas (impresso e link digital)
+                <a href="https://drive.google.com/drive/folders/1AL-Zu9IdEhjeUbi_mjATeWOe9shOG_yl?usp=sharing"
+                    target="_blank" class="btn-anexo">
+                    <i class="fab fa-google-drive"></i> Acessar documentos
+                </a>
+            </div>
             <div class="anexo-item"><i class="fas fa-laptop"></i> <strong>Anexo II</strong> - <a
                     href="https://pracaviva.vml10.xyz/" target="_blank">pracaviva.vml10.xyz</a> - plataforma educativa
                 Quiz da Praça Viva</div>
             <div class="anexo-item"><i class="fas fa-file-alt"></i> <strong>Anexo III</strong> - <a
                     href="https://oficio.vml10.xyz/" target="_blank">oficio.vml10.xyz</a> - versão digital interativa
                 deste ofício</div>
-            <div class="anexo-item"><i class="fas fa-university"></i> <strong>Anexo IV</strong> - ficha de
-                formalização do Projeto de Extensão III da Universidade Anhanguera</div>
-        </div>
-
-        <!-- PROTOCOLO -->
-        <div class="protocolo-card">
-            <i class="fas fa-stamp"></i>
-            <p>
-                <strong>espaço reservado para protocolo da Prefeitura Municipal</strong>
-                Número de protocolo: ________________ &nbsp;|&nbsp; Data de recebimento: ___/___/2026 &nbsp;|&nbsp;
-                Carimbo e assinatura do responsável pelo recebimento.
-            </p>
+            <div class="anexo-item"><i class="fas fa-graduation-cap"></i> <strong>Anexo IV</strong> - Atestado de Matrícula (Universidade Anhanguera)
+                <br><span style="font-size:0.8rem; color:var(--texto-sec); margin-left:28px;">* Comprova vínculo acadêmico e regularidade no curso de Engenharia de Software.</span>
+                <a href="https://drive.google.com/drive/folders/1AL-Zu9IdEhjeUbi_mjATeWOe9shOG_yl?usp=sharing"
+                    target="_blank" class="btn-anexo" style="margin-left:28px;">
+                    <i class="fab fa-google-drive"></i> Ver Atestado
+                </a>
+            </div>
+            <div class="anexo-item"><i class="fas fa-university"></i> <strong>Anexo V</strong> - Carta de Apresentação do Projeto de Extensão III (fornecida pela Universidade Anhanguera)
+                <a href="https://drive.google.com/drive/folders/1AL-Zu9IdEhjeUbi_mjATeWOe9shOG_yl?usp=sharing"
+                    target="_blank" class="btn-anexo">
+                    <i class="fab fa-google-drive"></i> Ver Carta
+                </a>
+            </div>
         </div>
 
     </div><!-- /document -->
